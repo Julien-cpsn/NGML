@@ -3,6 +3,24 @@
 
 > Stands for : **N**ew **G**eneric **M**arkup **L**anguage
 
+It is designed to simplify and renew HTML & XML (mainly android layouts).
+Before being a standard it is now only a to-HTML compiling language.
+
+Compile :
+```bash
+cargo build
+```
+
+Compile & run
+```bash
+cargo run
+```
+
+Usage :
+```bash 
+ngml <source_file.ngml> <output_file.html>
+```
+
 ## Tag changes
 
 ### 1) DOCTYPE
