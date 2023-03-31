@@ -1,7 +1,7 @@
 
 # NGML
 
-*N*ew *G*eneric *M*arkup *L*anguage
+> Stands for : **N**ew **G**eneric **M**arkup **L**anguage
 
 ## Tag changes
 
@@ -22,6 +22,8 @@ becomes
 Values :
 - format: web, A4, A3...
 - encoding: UTF-8
+- lang: `2 chars`
+- version: `string`
 
 ### 2) head & meta
 
@@ -65,10 +67,10 @@ Existing tags :
   - Example : `<text h2></text>` instead of `<h2></h2>`
 - label
   - change text direction
-  - Example : `<text reverse></text>` instead of `<bdo></bdo>`
+  - Example : `<text label="input_id"></text>` instead of `<label for="input_id"></label>`
 - reverse
   - defines a label for several elements
-  - Example : `<text label="input_id"></text>` instead of `<label for="input_id"></label>`
+  - Example : `<text reverse></text>` instead of `<bdo></bdo>`
 
 ### 4) a
 
@@ -84,7 +86,11 @@ Existing tags :
 
 `<!-- Comment -->` becomes <* Comment *>
 
-### 7) Meter
+### 7) Img
+
+`<img></img>` becomes `<image></image>`
+
+### 8) Meter
 
 `<meter></meter>` becomes `<gauge></gauge>`
 
@@ -98,7 +104,7 @@ Existing tags :
 **Attributes :**
 - reverse
   - Change row direction
-  - **Example :** `<row reverse></row>`
+  - Example : `<row reverse></row>`
 
 ### 2) column
 
@@ -107,9 +113,9 @@ Existing tags :
 **Attributes :**
 - reverse
     - Change column direction
-    - **Example :** `<column reverse></column>`
+    - Example : `<column reverse></column>`
 
-## 3) Deleted tags
+## Deleted tags
 
 - `<bdo></bdo>`
 
@@ -117,9 +123,20 @@ Existing tags :
 
 ### 1) Line comment
 
-Simply `// Comment`
+Simply `// Comment line`
 
-### 2) Selection possibilities
+### 2) No more style attribute
+
+Every CSS attribute is now a NGML tag attribute
+
+Example:
+```html
+<text color="red"></text>
+<div position="absolute"></div>
+<div border="1px solid black"></div>
+```
+
+### 3) Selection possibilities
 
 ```css
 <style>
@@ -144,12 +161,13 @@ text::h1::reverse.someClass {
 
 ## Scripting
 
-`Document.id.someTagId -> <T>|undefined`
+`Document.id.someTagId` -> `<T>|undefined`
 
 ```js
 <script>
+/* Some javascript */
+  
 function example() {
-    // Some script
     let someTag = Document.id.someTagId
 }
 </script>
