@@ -1,0 +1,72 @@
+<document
+	format="web"
+	enconding="UTF-8"
+	lang="fr"
+	version="1.0"
+>
+	<settings>
+		<title>NGML Example & Syntax</title>
+		<description>This page presents NGML and it's specific syntax</description>
+		<author>Julien Cpsn</author>
+	</settings>
+	
+	<content>
+		<div>
+			<text h1>Tag changes</text>
+			<list>
+				<item>
+					<p></p> becomes <text></text>
+					can handle h1 to h6 to change text heigth like : <text h2></text> instead of <h2></h2>
+					can handle reverse to change text direction like : <text reverse></text> instead of <bdo></bdo>
+				</item>
+				<item>
+					<a href=""></a> becomes <link ref=""></link>
+				</item>
+				<item>
+					<ul></ul> becomes <list></list>
+				</item>
+				<item>
+					<ol></ol> becomes <list ordered></list>
+				</item>
+				<item>
+					<!-- Comment --> becomes <* Comment *>
+				</item>
+				<item>
+					<meter></meter> becomes <gauge></gauge>
+				</item>
+			</list>
+		</div>
+		<div>
+			<text h1>New tags</h1>
+			<list>
+				<item>
+					<row></row> is equivalent to <div style="display: flex; flex-direction: row"></div>
+					possibility to add reverse in the tag like : <row reverse></row>
+				</item>
+				<item>
+					<column></column> is equivalent to <div style="display: flex; flex-direction: column"></div>
+					possibility to add reverse in the tag like : <column reverse></column>
+				</item>
+			</list>
+		</div>
+		<div>
+			<text h1>Deleted tags</h1>
+			<list>
+				<item>
+					<bdo></bdo>
+				</item>
+			</list>
+		</div>
+	</content>
+	
+	<style>
+		/* Some CSS */
+		text::reverse {
+			
+		}
+	</style>
+	
+	<script>
+		// Some script
+	</script>
+</document>
