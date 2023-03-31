@@ -1,3 +1,6 @@
-<text h1>TEST</text>
-<text h2 color="red">TEST</text>
-<text h3 color="blue" font-size="14">TEST</text>
+<text>TEST</text>
+<text h1>TEST1</text>
+<text h2 color="red">TEST2</text>
+<text h3 color="blue" font-size="14pt">TEST3</text>
+<text h4 nothing="some">TEST4</text>
+<text reverse nothing="some">TEST4</text>

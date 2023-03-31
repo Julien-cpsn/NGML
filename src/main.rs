@@ -1,13 +1,10 @@
 use std::fs::File;
 use std::io::{Read, Write};
-use regex::Regex;
-
-enum CssAttribute {
-    Color,
-    FontSize,
-}
+use fancy_regex::Regex;
 
 fn main() {
+    const CSS_KEYWORDS: [&str; 2] = ["color", "font-size"];
+
     let ngml_path = std::env::args().nth(1).expect("No NGML input file path given");
     let html_path = std::env::args().nth(2).expect("No HTML output file path given");
 
@@ -23,26 +20,68 @@ fn main() {
 
     /* Compile */
 
-    println!("Content {ngml_content}");
+    // generic tag attributes regex
+    let tag_regex = Regex::new(r#"<(\w+) (.*)>(.*)</(\w+)>"#).unwrap();
+    let tag_attributes_regex = Regex::new(r#"(([\w-]+)=["']?((?:.(?!["']\s+(?:\S+)=|\s*/?[>"']))+.)["']|\w+)"#).unwrap();
 
     // text tag
-    let text_h_regex = Regex::new(r#"<text (h\d)((\s([\w-]+)="(\w+)")*)>(.*)</text>"#).unwrap();
+    let h_regex = Regex::new(r"h\d").unwrap();
+
     let iterator_ngml_content = ngml_content.clone();
 
-    for cap in text_h_regex.captures_iter(iterator_ngml_content.as_str())  {
-        println!("{:?}", &cap);
+    for cap in tag_regex.captures_iter(iterator_ngml_content.as_str())  {
+        let capture = cap.unwrap();
 
-        /*
-        for key in (2..&cap.len() - 1).step_by(2) {
-            println!("{}\t{}", &cap[key], &cap[key + 1])
-        }*/
+        // Creates the beginning of the new html tag
+        let mut new_tag = String::from("<");
+        let mut new_tag_name = String::new();
 
-        let new_h_tag = "<".to_owned() + &cap[1] + ">" + &cap[cap.len() - 1] + "</" + &cap[1] + ">";
-        ngml_content = ngml_content.replace(&cap[0], new_h_tag.as_str());
+        /* --- ATTRIBUTES --- */
+        // Count tag CSS attributes
+        let mut css_attribute_count = 0;
+        let mut style = String::from("style=\"");
+
+        // Manages attributes
+        for attribute_cap in tag_attributes_regex.captures_iter(&capture[2]) {
+            let attribute_capture = attribute_cap.unwrap();
+
+            if attribute_capture.get(2).is_some() && CSS_KEYWORDS.contains(&&attribute_capture[2]) {
+                style = style + &attribute_capture[2] + ": " + &attribute_capture[3] + ";";
+                css_attribute_count += 1;
+            }
+            else {
+                // Adapts the html tag
+                match &capture[1] {
+                    "text" => {
+                        // Handles h1 .. h6 case
+                        if h_regex.is_match(&attribute_capture[1]).unwrap() {
+                            new_tag_name = attribute_capture[1].to_string();
+                        }
+                        else if attribute_capture[1].eq("reverse") {
+                            new_tag_name = "bdo".to_string();
+                        }
+                    }
+                    _ => {
+                        new_tag_name = capture[1].to_string();
+                    }
+                }
+            }
+        }
+
+        // Appends tag name to tag
+        new_tag = new_tag + &new_tag_name;
+
+        // Do not append the style if there was no valid CSS attribute
+        if css_attribute_count > 0 {
+            new_tag = new_tag + " " + &style + "\"";
+        }
+        /* ----- */
+
+        new_tag = new_tag + ">" + &capture[3] + "</" + &new_tag_name + ">";
+        ngml_content = ngml_content.replace(&capture[0], new_tag.as_str());
     }
 
     println!();
-    println!("New content {ngml_content}");
 
     /* ----- */
 
