@@ -156,7 +156,7 @@ Example:
 
 ### 3) Selection possibilities
 
-```css
+```html
 <style>
 /* Some CSS */
 
@@ -181,7 +181,7 @@ text::h1::reverse.someClass {
 
 `Document.id.someTagId` -> `<T>|undefined`
 
-```js
+```html
 <script>
 /* Some javascript */
   
