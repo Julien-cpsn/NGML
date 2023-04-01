@@ -4,3 +4,8 @@
 <text h3 color="blue" font-size="14pt">TEST3</text>
 <text h4 nothing="some">TEST4</text>
 <text reverse nothing="some">TEST4</text>
+<* Test comment *>
+<*
+    Multi line
+    comment
+*>
