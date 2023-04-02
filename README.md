@@ -88,7 +88,7 @@ Existing tags :
   - Example : `<text label="input_id"></text>` instead of `<label for="input_id"></label>`
 - reverse
   - defines a label for several elements
-  - Example : `<text reverse></text>` instead of `<bdo></bdo>`
+  - Example : `<text reverse></text>` instead of `<bdo dir="rtl"></bdo>`
 
 ### 4) a
 

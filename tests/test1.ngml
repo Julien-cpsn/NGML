@@ -6,6 +6,13 @@
 <text reverse nothing="some">TEST4</text>
 <* Test comment *>
 <*
-    Multi line
-    comment
+Multi line
+comment
 *>
+<row>
+    <text>TEST5</text>
+</row>
+<div>
+    <p>Pourquoi pas</p>
+    <div></div>
+</div>

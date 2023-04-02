@@ -22,8 +22,11 @@ fn main() {
     /* Compile */
 
     /* --- Generic tags --- */
+    // Tags replaced (ordered)
+    let mut replaced_tags = Vec::<String>::new();
+
     // generic tag attributes regex
-    let tag_regex = Regex::new(r#"<(\w+)\s*(.*)>(.*)</(\w+)>"#).unwrap();
+    let tag_regex = Regex::new(r#"<(\w+)\s*([^>]*)>"#).unwrap();
     let tag_attributes_regex = Regex::new(r#"(([\w-]+)=["']?((?:.(?!["']\s+(?:\S+)=|\s*/?[>"']))+.)["']|\w+)"#).unwrap();
 
     // text tag
@@ -71,24 +74,25 @@ fn main() {
                     }
                     _ => {
                         new_tag_name = capture[1].to_string();
+                        tag_attributes_count = tag_attributes_count + 1;
                     }
                 }
             }
         }
 
-        // Appends name and attributes to the tag
-        if tag_attributes_count > 0 {
-            new_tag = new_tag + &new_tag_name + &new_tag_attributes;
-        }
-        // Appends name to the tag
-        else if tag_attributes_count == 0 {
-            new_tag_name = match &capture[1] {
-                "text" => "p".to_string(),
-                _ => (&capture[1]).to_string()
+        // If no ngml tag had attributes adcapt the new name, attributes and style
+        if tag_attributes_count == 0 {
+            match &capture[1] {
+                "text" => new_tag_name = "p".to_string(),
+                "row" => {
+                    new_tag_name = "div".to_string();
+                    style = style + "display:flex;flex-direction:row;";
+                }
+                _ => new_tag_name = (&capture[1]).to_string()
             };
-
-            new_tag = new_tag + &new_tag_name;
         }
+        // Appends name and attributes to the tag
+        new_tag = new_tag + &new_tag_name + &new_tag_attributes;
 
         // Append the style to the tag
         if css_attribute_count > 0 {
@@ -96,9 +100,28 @@ fn main() {
         }
 
         // Finishes the tag
-        new_tag = new_tag + ">" + &capture[3] + "</" + &new_tag_name + ">";
+        new_tag = new_tag + ">"; //+ &capture[3] + "</" + &new_tag_name + ">";
         // Replaces the ngml tag to html tag
         ngml_content = ngml_content.replace(&capture[0], new_tag.as_str());
+
+        // Pushes the newly replaces tag to the replaced tag list
+        replaced_tags.push(new_tag_name.clone());
+    }
+
+    // Closing tags
+    let mut closing_tag_counter = 0;
+    let iterator_ngml_content = ngml_content.clone();
+
+    let closing_tag_regex = Regex::new(r#"</(\w+)>"#).unwrap();
+    for cap in closing_tag_regex.captures_iter(iterator_ngml_content.as_str()) {
+        let capture = cap.unwrap();
+        let new_closing_tag = "</".to_owned() + &replaced_tags[closing_tag_counter] + ">";
+
+        ngml_content = ngml_content.replacen(&capture[0], &new_closing_tag, 1);
+
+        closing_tag_counter = closing_tag_counter + 1;
+        // To fix swap problem
+        // <(?'tag'\w+)\s*([^>]*)>(.*</(\k'tag')>)?
     }
 
     /* --- Comments --- */
